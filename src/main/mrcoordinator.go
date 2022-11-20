@@ -9,21 +9,38 @@ package main
 // Please do not change this file.
 //
 
-import "6.824/mr"
-import "time"
-import "os"
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"time"
+
+	"6.824/mr"
+	log "github.com/sirupsen/logrus"
+)
+
+func initLog() {
+	log.SetFormatter(
+		&log.TextFormatter{
+			DisableColors: false,
+			FullTimestamp: true,
+		},
+	)
+	log.SetLevel(log.ErrorLevel)
+}
 
 func main() {
+	initLog()
+	log.Info("Launch the Map reduce coordinator...")
 	if len(os.Args) < 2 {
 		fmt.Fprintf(os.Stderr, "Usage: mrcoordinator inputfiles...\n")
 		os.Exit(1)
 	}
 
 	m := mr.MakeCoordinator(os.Args[1:], 10)
+	log.Info("coordinator is running...")
 	for m.Done() == false {
 		time.Sleep(time.Second)
 	}
-
+	log.Info("coordinator done.")
 	time.Sleep(time.Second)
 }

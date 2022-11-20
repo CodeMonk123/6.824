@@ -141,7 +141,7 @@ sleep 1
 $TIMEOUT ../mrworker ../../mrapps/mtiming.so &
 $TIMEOUT ../mrworker ../../mrapps/mtiming.so
 
-NT=`cat mr-out* | grep '^times-' | wc -l | sed 's/ //g'`
+NT=$(cat mr-out* | grep '^times-' | wc -l | sed 's/ //g')
 if [ "$NT" != "2" ]
 then
   echo '---' saw "$NT" workers rather than 2
@@ -160,7 +160,6 @@ fi
 
 wait
 
-
 #########################################################
 echo '***' Starting reduce parallelism test.
 
@@ -169,10 +168,11 @@ rm -f mr-*
 $TIMEOUT ../mrcoordinator ../pg*txt &
 sleep 1
 
+# start 2 workers
 $TIMEOUT ../mrworker ../../mrapps/rtiming.so &
 $TIMEOUT ../mrworker ../../mrapps/rtiming.so
 
-NT=`cat mr-out* | grep '^[a-z] 2' | wc -l | sed 's/ //g'`
+NT=$(cat mr-out* | grep '^[a-z] 2' | wc -l | sed 's/ //g')
 if [ "$NT" -lt "2" ]
 then
   echo '---' too few parallel reduces.
@@ -197,7 +197,7 @@ $TIMEOUT ../mrworker ../../mrapps/jobcount.so
 $TIMEOUT ../mrworker ../../mrapps/jobcount.so &
 $TIMEOUT ../mrworker ../../mrapps/jobcount.so
 
-NT=`cat mr-out* | awk '{print $2}'`
+NT=$(cat mr-out* | awk '{print $2}')
 if [ "$NT" -eq "8" ]
 then
   echo '---' job count test: PASS
@@ -267,6 +267,7 @@ else
 fi
 rm -f mr-*
 
+wait
 #########################################################
 echo '***' Starting crash test.
 
@@ -283,7 +284,7 @@ sleep 1
 $TIMEOUT ../mrworker ../../mrapps/crash.so &
 
 # mimic rpc.go's coordinatorSock()
-SOCKNAME=/var/tmp/824-mr-`id -u`
+SOCKNAME=/var/tmp/824-mr-$(id -u)
 
 ( while [ -e $SOCKNAME -a ! -f mr-done ]
   do
